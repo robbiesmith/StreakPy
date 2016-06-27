@@ -6,19 +6,12 @@ import datetime
 import random
 import user
 
-user = {
-    'entry' : '547',
-    'data' : '{"loginValue": "ggggooooggggoooo", "password": "ggooggoo"}'
-    }
-user = {
-    'entry' : '9',
-    'data' : '{"loginValue": "robbie_smith", "password": "kaurapo"}'
-    }
+userInfo = user.getUser()
 
 def makePick(matchup, selection):
     try:
         s = requests.Session()
-        r = s.post("https://registerdisney.go.com/jgc/v2/client/ESPN-ESPNCOM-PROD/guest/login", data = user['data'], headers = {'Content-Type': 'application/json' })
+        r = s.post("https://registerdisney.go.com/jgc/v2/client/ESPN-ESPNCOM-PROD/guest/login", data = userInfo['data'], headers = {'Content-Type': 'application/json' })
 
         accountInfo = json.loads(r.text)
 
@@ -202,7 +195,7 @@ def getMatchupByLeaderboard():
 
 while(True):
     try:
-        tree = etree.parse("http://streak.espn.go.com/mobile/viewMatchups?entryId=" + user['entry'])
+        tree = etree.parse("http://streak.espn.go.com/mobile/viewMatchups?entryId=" + userInfo['entry'])
         root = tree.getroot()
 
         if (root.find('Entry').find('CurrentSelection') is None):
