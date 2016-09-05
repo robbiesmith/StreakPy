@@ -18,7 +18,7 @@ def makePick(matchup, selection):
         s.cookies.update({'swid': accountInfo['data']['profile']['swid']})
         s.cookies.update({'espn_s2': accountInfo['data']['s2']})
 
-        page = s.get('http://streak.espn.go.com/en/createOrUpdateEntry?matchup=m' + matchup + 'o' + selection)
+        page = s.get('http://streak.espn.com/en/createOrUpdateEntry?matchup=m' + matchup + 'o' + selection)
 
     except ConnectionError:
         print("connectionerror")
@@ -179,7 +179,7 @@ def getMatchupByTime():
 	
 def getMatchupByLeaderboard():
     try:
-        tree = etree.parse("http://streak.espn.go.com/mobile/winLeaderboard")
+        tree = etree.parse("http://streak.espn.com/mobile/winLeaderboard")
         root = tree.getroot()
         for matchup in root.iter("LeaderBoardEntry"):
             if (not matchup.find('*//Locked') is None and matchup.find('*//Locked').text == 'false'):
@@ -195,7 +195,7 @@ def getMatchupByLeaderboard():
 
 while(True):
     try:
-        tree = etree.parse("http://streak.espn.go.com/mobile/viewMatchups?entryId=" + userInfo['entry'])
+        tree = etree.parse("http://streak.espn.com/mobile/viewMatchups?entryId=" + userInfo['entry'])
         root = tree.getroot()
 
         if (root.find('Entry').find('CurrentSelection') is None):
