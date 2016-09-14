@@ -199,8 +199,10 @@ while(True):
         root = tree.getroot()
 
         if (root.find('Entry').find('CurrentSelection') is None):
-	        getMatchupByLeaderboard()
-        	#getMatchupByTime()
+            if datetime.datetime.today().day == 1:
+                getMatchupByTime()
+            else:
+                getMatchupByLeaderboard()
     except ConnectionError: 
         print("connection error")
         pass
