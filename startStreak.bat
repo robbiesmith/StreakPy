@@ -1,0 +1,1 @@
+C:\Users\robsmith\AppData\Local\Programs\Python\Python36-32\python c:\users\robsmith\documents\github\StreakPy\StreakPy.py

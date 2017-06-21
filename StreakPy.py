@@ -5,21 +5,25 @@ import time
 import datetime
 import random
 import user
+from selenium import webdriver
+
 
 userInfo = user.getUser()
 
 def makePick(matchup, selection):
     try:
-        s = requests.Session()
-        r = s.post("https://registerdisney.go.com/jgc/v2/client/ESPN-ESPNCOM-PROD/guest/login", data = userInfo['data'], headers = {'Content-Type': 'application/json' })
-
-        accountInfo = json.loads(r.text)
-
-        s.cookies.update({'swid': accountInfo['data']['profile']['swid']})
-        s.cookies.update({'espn_s2': accountInfo['data']['s2']})
-
-        page = s.get('http://streak.espn.com/en/createOrUpdateEntry?matchup=m' + matchup + 'o' + selection)
-
+        driver = webdriver.Chrome()
+        driver.get('http://espn.com/login')
+        time.sleep(2)
+        driver.switch_to.frame(driver.find_element_by_tag_name("iframe"))
+        driver.find_element_by_xpath("//input[@type='email']").send_keys(userInfo['data']['loginValue']);
+        driver.find_element_by_xpath("//input[@type='password']").send_keys(userInfo['data']['password']);
+        driver.find_element_by_xpath("//button[@type='submit']").click();
+        time.sleep(2)
+        driver.get('http://streak.espn.com/en/createOrUpdateEntry?matchup=m' + matchup + 'o' + selection)
+        time.sleep(2)
+        driver.close()
+        
     except ConnectionError:
         print("connectionerror")
         pass
@@ -170,7 +174,7 @@ def getMatchupByTime():
             id = matchup.find('MatchupId').text
             percent = float(matchup.findall('Opponent')[0].find('PercentageUsersPicked').text)
             which = 0 if random.random() < percent else 1 # choose based on weighting of existing pickers
-#                    which = random.randint(0, 1) # choose randomly
+#                    which = random.randint(0, 1) # choose randomly with equal probability
             oppId = matchup.findall('Opponent')[which].find('OpponentId').text
             makePick(id,oppId)
             print(matchup.find('Title').text)
