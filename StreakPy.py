@@ -15,7 +15,10 @@ def makePick(matchup, selection):
         driver = webdriver.Chrome()
         driver.get('http://espn.com/login')
         time.sleep(2)
-        driver.switch_to.frame(driver.find_element_by_tag_name("iframe"))
+        # C:\Users\robsmith\AppData\Local\Microsoft\WindowsApps
+        driver.switch_to.frame(driver.find_element_by_id("disneyid-iframe"))
+#        driver.switch_to.frame(driver.find_element_by_tag_name("iframe"))
+#        driver.switch_to.frame(driver.find_element_by_name("disneyid-iframe"))
         driver.find_element_by_xpath("//input[@type='email']").send_keys(userInfo['data']['loginValue']);
         driver.find_element_by_xpath("//input[@type='password']").send_keys(userInfo['data']['password']);
         driver.find_element_by_xpath("//button[@type='submit']").click();
@@ -182,20 +185,17 @@ def getMatchupByTime():
             print(endtime)
 	
 def getMatchupByLeaderboard():
-    try:
-        tree = etree.parse("http://streak.espn.com/mobile/winLeaderboard")
-        root = tree.getroot()
-        for matchup in root.iter("LeaderBoardEntry"):
-            if (not matchup.find('*//Locked') is None and matchup.find('*//Locked').text == 'false'):
-                id = matchup.find('*//MatchupIdSelected').text
-                oppId = matchup.find('*//OpponentIdSelected').text
-                makePick(id,oppId)
-                print(matchup.find('UserName').text)
-                print(matchup.find('*//Title').text)
-                break
-
-    except Exception as ex:
-        print(ex)
+    parser = etree.XMLParser(recover=True)
+    tree = etree.parse("http://streak.espn.com/mobile/winLeaderboard", parser)
+    root = tree.getroot()
+    for matchup in root.iter("LeaderBoardEntry"):
+        if (not matchup.find('*//Locked') is None and matchup.find('*//Locked').text == 'false'):
+            id = matchup.find('*//MatchupIdSelected').text
+            oppId = matchup.find('*//OpponentIdSelected').text
+            makePick(id,oppId)
+            print(matchup.find('UserName').text)
+            print(matchup.find('*//Title').text)
+            break
 
 while(True):
     try:
@@ -207,6 +207,7 @@ while(True):
                 getMatchupByTime()
             else:
                 getMatchupByLeaderboard()
+
     except ConnectionError: 
         print("connection error")
         pass
