@@ -23,7 +23,7 @@ def makePick(matchup, selection):
         driver.find_element_by_xpath("//input[@type='password']").send_keys(userInfo['data']['password']);
         driver.find_element_by_xpath("//button[@type='submit']").click();
         time.sleep(2)
-        driver.get('http://streak.espn.com/en/createOrUpdateEntry?matchup=m' + matchup + 'o' + selection)
+        driver.get('http://fantasy.espn.com/streak/en/createOrUpdateEntry?matchup=m' + matchup + 'o' + selection)
         time.sleep(2)
         driver.close()
         
@@ -186,7 +186,7 @@ def getMatchupByTime():
 	
 def getMatchupByLeaderboard():
     parser = etree.XMLParser(recover=True)
-    tree = etree.parse("http://streak.espn.com/mobile/winLeaderboard", parser)
+    tree = etree.parse("http://fantasy.espn.com/streak/en/mobile/winLeaderboard", parser)
     root = tree.getroot()
     for matchup in root.iter("LeaderBoardEntry"):
         if (not matchup.find('*//Locked') is None and matchup.find('*//Locked').text == 'false'):
@@ -199,7 +199,7 @@ def getMatchupByLeaderboard():
 
 while(True):
     try:
-        tree = etree.parse("http://streak.espn.com/mobile/viewMatchups?entryId=" + userInfo['entry'])
+        tree = etree.parse("http://fantasy.espn.com/streak/en/mobile/viewMatchups?entryId=" + userInfo['entry'])
         root = tree.getroot()
 
         if (root.find('Entry').find('CurrentSelection') is None):
